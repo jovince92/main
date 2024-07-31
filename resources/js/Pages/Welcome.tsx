@@ -32,7 +32,7 @@ const Welcome = (props: Props) => {
                             </Button>
                         </Hint>
                         <Hint label='Add Children'>
-                            <Button size='icon'>
+                            <Button onClick={onAddChildren} size='icon'>
                                 <PlusSquareIcon className="h-6 w-6" />
                             </Button>
                         </Hint>

@@ -68,7 +68,8 @@ const CodeModal = () => {
 
     useEffect(()=>{
         if(!!code) setData('name',code.name);
-    },[code]);
+        if(!!parentCode) setData('parent_id',parentCode.id);
+    },[code,parentCode]);
 
 
     return (
