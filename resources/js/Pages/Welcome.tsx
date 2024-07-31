@@ -1,6 +1,7 @@
 import Hint from "@/Components/Hint";
 import { Button } from "@/Components/ui/button";
 import { useCodeModal } from "@/Hooks/useCodeModal";
+import { useDeleteConfirmModal } from "@/Hooks/useDeleteConfirmModal";
 import { useSelectedCode } from "@/Hooks/useSelectedCode";
 import Layout from "@/Layouts/Layout";
 import { cn } from "@/lib/utils";
@@ -15,24 +16,25 @@ const Welcome = (props: Props) => {
     const {onOpen} = useCodeModal();
     const onAddChildren = () => onOpen(undefined,selectedCode);
     const onEdit = () => onOpen(selectedCode);
+    const {onOpen:onDelete} = useDeleteConfirmModal();
     return (
         <Layout>
-            <div className="h-full flex flex-col py-2 px-3">
+            <div className="h-full flex flex-col  px-3">
                 <div className={cn("flex items-center justify-between group ",!!selectedCode?'opacity-100':'opacity-0')}>
                     <h4 className="text-lg font-semibold">{selectedCode?.name}</h4>
                     <div className="flex items-center gap-x-2 opacity-15 transition duration-300 group-hover:opacity-100">
                         <Hint label='Edit Item'>
-                            <Button onClick={onEdit} size='icon'>
+                            <Button variant='ghost' onClick={onEdit} size='icon-sm'>
                                 <PencilLineIcon className="h-6 w-6" />
                             </Button>
                         </Hint>
                         <Hint label='Delete Item'>
-                            <Button size='icon'>
+                            <Button onClick={onDelete} variant='ghost' size='icon-sm'>
                                 <Trash2Icon className="h-6 w-6" />
                             </Button>
                         </Hint>
                         <Hint label='Add Children'>
-                            <Button onClick={onAddChildren} size='icon'>
+                            <Button variant='ghost' onClick={onAddChildren} size='icon-sm'>
                                 <PlusSquareIcon className="h-6 w-6" />
                             </Button>
                         </Hint>

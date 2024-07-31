@@ -33,6 +33,12 @@ const Aside = ({className}:Props) => {
                     {filtered.map((code) => (
                         <TreeItem key={code.id} code={code} />
                     ))}
+                    {codes.length === 0 && (
+                        <div className='pt-10 space-y-1.5'>
+                            <div className='text-center text-secondary-foreground '>No items found</div>
+                            <div className='text-center text-muted-foreground text-sm '>Please add new Items</div>
+                        </div>
+                    )}
                 </div>
             </div>
         </aside>

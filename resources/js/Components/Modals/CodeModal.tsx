@@ -4,41 +4,29 @@ import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { FormEventHandler, useEffect } from "react";
 import { Button } from "../ui/button";
-import { useForm } from "@inertiajs/react";
+import { useForm, usePage } from "@inertiajs/react";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import { useSelectedCode } from "@/Hooks/useSelectedCode";
+import { PageProps } from "@/types";
 
 
 const CodeModal = () => {
     const {isOpen,onClose,currentCode:code,parentCode} = useCodeModal();
     const {setSelectedCode} = useSelectedCode();
-    const isCreatingTopLevel = !code && !parentCode;
-    const titleLabel = !!code ? `Edit ${code.name}` : !!parentCode ? `Add an Item to ${parentCode.name}` : 'Create a new Top Level Item';
+    
+    const titleLabel = !!code ? `Edit ${code.name}` : !!parentCode ? `Add an Item to ${parentCode.name}` : 'Create a new Top Level Item';   
+    
     const {data,setData,patch,put,errors,processing} =useForm({
         name:code?.name || '',
-        parent_id:parentCode?.id || null,
-        id:code?.id || null
+        parent_id:parentCode?.id ,
     });
     const onSubmit:FormEventHandler<HTMLFormElement> = e =>{        
         e.preventDefault();
-        if(isCreatingTopLevel){
-            put(route('store'),{
-                onError:e=>{
-                    toast.error('Something went wrong. Please try again');
-                    console.error(e);
-                    console.error(errors)
-                },
-                onSuccess:()=>{
-                    toast.success('Top Level Item created successfully');
-                    onClose();
-                }
-            });
-        }
+        
         if(!!code){
             const {id} = code;
-            patch(route('update',{id}),{ 
-                preserveState:false,               
+            patch(route('update',{id}),{
                 onError:e=>{
                     toast.error('Something went wrong. Please try again');
                     console.error(e);
@@ -47,11 +35,11 @@ const CodeModal = () => {
                 onSuccess:()=>{
                     toast.success('Item updated successfully');
                     onClose();
-                    setSelectedCode(code);
+                    setSelectedCode({...code,name:data.name});
                 },
             });
         }
-        if(!!parentCode){
+        if(!code){            
             put(route('store'),{
                 onError:e=>{
                     toast.error('Something went wrong. Please try again');
@@ -64,12 +52,16 @@ const CodeModal = () => {
                 }
             });
         }
+            
+        
     }
 
     useEffect(()=>{
-        if(!!code) setData('name',code.name);
-        if(!!parentCode) setData('parent_id',parentCode.id);
-    },[code,parentCode]);
+        setData(val=>({
+            ...val,
+            parent_id:parentCode?.id            
+        }));
+    },[parentCode]);
 
 
     return (

@@ -10,6 +10,7 @@ Route::middleware(['auth'])->group(function(){
     Route::get('/', [CodeController::class, 'index'])->name('welcome');
     Route::put('/store', [CodeController::class, 'store'])->name('store');    
     Route::patch('/update/{id}', [CodeController::class, 'update'])->name('update');
+    Route::delete('/destroy/{id}', [CodeController::class, 'destroy'])->name('destroy');
 });
 
 

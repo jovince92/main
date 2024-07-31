@@ -16,7 +16,7 @@ const Layout = (props: Props) => {
             <main className="h-full bg-secondary overflow-y-auto">
                 <Nav />
                 <Aside />
-                <div className={cn("mt-14 pb-10 py-5 h-full bg-background overflow-y-auto ease-in-out transition-all duration-300 pl-0 md:pl-64")}>                
+                <div className={cn("pt-[4.5rem] pb-10 h-full bg-background overflow-y-auto ease-in-out transition-all duration-300 pl-0 md:pl-64")}>                
                     {children}                
                 </div>
             </main>

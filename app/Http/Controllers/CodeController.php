@@ -22,14 +22,27 @@ class CodeController extends Controller
 
     /**
      * Store a newly created resource in storage.
+     * 
      */
     public function store(Request $request)
     {
+        $head_id = null;
+
+        if ($request->parent_id) {
+            $parent = Code::find($request->parent_id);
+            $head_id = $parent->id;
+
+            while ($parent->parent_id) {
+                $parent = Code::find($parent->parent_id);
+                $head_id = $parent->id;
+            }
+        }
+
         Code::create([
-            'name'=>$request->name,
-            'head_id'=>$request->head_id ?? null,
-            'parent_id'=>$request->parent_id ?? null,
-            'user_id'=>$request->user()->id,
+            'name' => $request->name,
+            'head_id' => $head_id,
+            'parent_id' => $request->parent_id ?? null,
+            'user_id' => $request->user()->id,
         ]);
     }
 
@@ -50,6 +63,7 @@ class CodeController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $code = Code::findOrFail($id);
+        $code->delete();
     }
 }
