@@ -10,13 +10,14 @@ type Props = {
     sideOffset?: number;
     alignOffset?: number;
     className?: string;
+    delay?: number;
 }
 
 const Hint = (props: Props) => {
-    const {label,children,side='bottom',align='center',sideOffset=0,alignOffset=0,className} = props;
+    const {label,children,side='bottom',align='center',sideOffset=0,alignOffset=0,className,delay=100} = props;
     return (
         <TooltipProvider>
-            <Tooltip delayDuration={100}>
+            <Tooltip delayDuration={delay}>
                 <TooltipTrigger asChild>
                     {children}
                 </TooltipTrigger>

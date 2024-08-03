@@ -1,13 +1,13 @@
-import { Button } from '@/Components/ui/button'
-import { Input } from '@/Components/ui/input'
-import { Label } from '@/Components/ui/label'
-import { useForm } from '@inertiajs/react'
-import { Loader2 } from 'lucide-react'
-import React, { FormEventHandler } from 'react'
+import React, { FormEventHandler, ReactNode } from 'react'
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '../ui/dialog'
+import { Button } from '../ui/button'
+import { useForm } from '@inertiajs/react';
+import { Label } from '../ui/label';
+import { Input } from '../ui/input';
+import { Loader2 } from 'lucide-react';
 
-type Props = {}
 
-const Login = (props: Props) => {
+const LoginModal = () => {
     const {data,setData,processing,errors,reset,post}  = useForm({
         username: '',
         password: ''
@@ -17,13 +17,20 @@ const Login = (props: Props) => {
         e.preventDefault();
         post(route('login'));
     }
-
-
     return (
-        <div className="flex min-h-screen items-center justify-center bg-secondary">
-            <div className="w-full max-w-md p-8 space-y-6 bg-background rounded-lg shadow-md">
-                <h2 className="text-2xl font-bold text-center">Login</h2>
-                <form onSubmit={onSubmit} className="space-y-6">
+        <Dialog onOpenChange={(e)=>!e&&reset()}>
+            <DialogTrigger asChild>
+                <Button>Log In</Button>
+            </DialogTrigger>
+            <DialogContent>
+                <DialogHeader>
+                    <DialogTitle>Code Management</DialogTitle>
+                    <DialogDescription>
+                        Login To Contiue
+                    </DialogDescription>
+                </DialogHeader>
+                              
+                <form onSubmit={onSubmit} className="flex flex-col gap-y-3.5">
                     <div>
                         <Label htmlFor="username">
                             Username
@@ -69,9 +76,10 @@ const Login = (props: Props) => {
                         </Button>
                     </div>
                 </form>
-            </div>
-        </div>
+                
+            </DialogContent>
+        </Dialog>
     )
 }
 
-export default Login
+export default LoginModal

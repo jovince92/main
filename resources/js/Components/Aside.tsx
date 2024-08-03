@@ -1,7 +1,7 @@
 import { cn } from '@/lib/utils'
-import { PageProps } from '@/types';
+import { Code, PageProps } from '@/types';
 import { usePage } from '@inertiajs/react';
-import { ChevronRight,ChevronDown, PlusCircle } from 'lucide-react';
+import { PlusCircle } from 'lucide-react';
 import TreeItem from './TreeItem';
 import { Input } from './ui/input';
 import { useState } from 'react';
@@ -11,10 +11,12 @@ import { useCodeModal } from '@/Hooks/useCodeModal';
 
 type Props = {
     className?: string;
+    selectedCode?: Code;
 }
 
-const Aside = ({className}:Props) => {    
-    const { codes } = usePage<PageProps>().props;
+const Aside = ({className,selectedCode}:Props) => {    
+    const { codes,auth } = usePage<PageProps>().props;
+    const isAuthenticated = !!auth.user;
     const [filter, setFilter] = useState('');
     const filtered = codes.filter((code) => code.name.toLowerCase().includes(filter.toLowerCase()));
     const {onOpen} = useCodeModal();
@@ -24,14 +26,14 @@ const Aside = ({className}:Props) => {
                 <div className='flex items-center gap-x-1'>
                     <Input value={filter} onChange={e=>setFilter(e.target.value)} placeholder='Input name to search...' className='flex-1 placeholder:italic focus:!ring-offset-0 focus:!ring-0'/>
                     <Hint label='Add Top Level Item'>
-                        <Button onClick={()=>onOpen()} size='icon'  variant='outline'>
+                        {isAuthenticated&&(<Button onClick={()=>onOpen()} size='icon'  variant='outline'>
                             <PlusCircle className='h-5 w-5' />
-                        </Button>
+                        </Button>)}
                     </Hint>
                 </div>
                 <div className='flex-1 overflow-auto px-4'>
                     {filtered.map((code) => (
-                        <TreeItem key={code.id} code={code} />
+                        <TreeItem key={code.id} code={code} selectedCode={selectedCode} />
                     ))}
                     {codes.length === 0 && (
                         <div className='pt-10 space-y-1.5'>

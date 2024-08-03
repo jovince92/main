@@ -27,5 +27,6 @@ export interface Code extends Timestamps {
     code_2?: string;
     name: string;
     children: Code[];
+    items?: Code[];
     descendants?: Code[];
 }

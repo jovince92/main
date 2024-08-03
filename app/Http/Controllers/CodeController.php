@@ -4,8 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Code;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Redis;
 use Inertia\Inertia;
 
 class CodeController extends Controller
@@ -13,9 +11,16 @@ class CodeController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        return Inertia::render('Welcome');
+        $id = $request->id;
+        if(!$id) return Inertia::render('Welcome');
+        $selectedCode = Code::with(['items'])->where('id',$id)->firstOrFail();
+        $breadcrumb = $selectedCode ? $this->getBreadcrumb($selectedCode) : [];
+        return Inertia::render('Welcome', [
+            'selectedCode' => $selectedCode,
+            'breadcrumb' => $breadcrumb,
+        ]);
     }
 
     
@@ -37,11 +42,13 @@ class CodeController extends Controller
                 $head_id = $parent->id;
             }
         }
-
+        
         Code::create([
             'name' => $request->name,
             'head_id' => $head_id,
-            'parent_id' => $request->parent_id ?? null,
+            'parent_id' => $request->parent_id,
+            'code_1' => $request->code_1 ?? null,
+            'code_2' => $request->code_2 ?? null,
             'user_id' => $request->user()->id,
         ]);
     }
@@ -54,7 +61,9 @@ class CodeController extends Controller
     {
         $code = Code::findOrFail($id);
         $code->update([
-            'name'=>$request->name,
+            'name'=>$request->name,            
+            'code_1' => $request->code_1 ?? null,
+            'code_2' => $request->code_2 ?? null,
         ]);
     }
 
@@ -64,6 +73,26 @@ class CodeController extends Controller
     public function destroy(string $id)
     {
         $code = Code::findOrFail($id);
+        $isItem = isset($code->code_1);
         $code->delete();
+        if(!$isItem) return redirect()->route('welcome');
+
+    }
+
+    /**
+     * Recursively fetch the parent entities.
+     */
+    private function getBreadcrumb($code)
+    {
+        $breadcrumb = [];
+        while ($code) {
+            $breadcrumb[] = [
+                'id' => $code->id,
+                'parent_id' => $code->parent_id,
+                'name' => $code->name,
+            ];
+            $code = $code->parent;
+        }
+        return array_reverse($breadcrumb); // Reverse to get topmost entity first
     }
 }

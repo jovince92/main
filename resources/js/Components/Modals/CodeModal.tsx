@@ -7,17 +7,14 @@ import { Button } from "../ui/button";
 import { useForm, usePage } from "@inertiajs/react";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
-import { useSelectedCode } from "@/Hooks/useSelectedCode";
-import { PageProps } from "@/types";
 
 
 const CodeModal = () => {
     const {isOpen,onClose,currentCode:code,parentCode} = useCodeModal();
-    const {setSelectedCode} = useSelectedCode();
     
     const titleLabel = !!code ? `Edit ${code.name}` : !!parentCode ? `Add an Item to ${parentCode.name}` : 'Create a new Top Level Item';   
     
-    const {data,setData,patch,put,errors,processing} =useForm({
+    const {data,setData,patch,put,errors,processing,reset} =useForm({
         name:code?.name || '',
         parent_id:parentCode?.id ,
     });
@@ -35,7 +32,6 @@ const CodeModal = () => {
                 onSuccess:()=>{
                     toast.success('Item updated successfully');
                     onClose();
-                    setSelectedCode({...code,name:data.name});
                 },
             });
         }
@@ -56,13 +52,17 @@ const CodeModal = () => {
         
     }
 
-    useEffect(()=>{
-        setData(val=>({
+    useEffect(() => {
+        setData(val => ({
             ...val,
-            parent_id:parentCode?.id            
+            parent_id: parentCode?.id,
+            name: code?.name || ''
         }));
-    },[parentCode]);
+    }, [parentCode, code]);
 
+    useEffect(()=>{
+        if(!isOpen) reset();
+    },[isOpen]);
 
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>

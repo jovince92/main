@@ -1,11 +1,9 @@
 <?php
-
 namespace Database\Seeders;
 
+use App\Models\Code;
 use App\Models\User;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
-use Faker\Factory as Faker;
 
 class CodeSeeder extends Seeder
 {
@@ -14,57 +12,102 @@ class CodeSeeder extends Seeder
      */
     public function run(): void
     {
-        $faker = Faker::create();
+        $iso_3166 = [
+            "Americas" => [
+                "North America" => [
+                    "Central America" => [
+                        "BZ" => "Belize",
+                        "CR" => "Costa Rica",
+                        "SV" => "El Salvador",
+                        "GT" => "Guatemala",
+                        "HN" => "Honduras",
+                        "NI" => "Nicaragua",
+                        "PA" => "Panama",
+                    ],
+                    "Caribbean" => [
+                        "AG" => "Antigua and Barbuda",
+                        "BS" => "Bahamas",
+                        "BB" => "Barbados",
+                        "CU" => "Cuba",
+                        "DM" => "Dominica",
+                        "DO" => "Dominican Republic",
+                        "GD" => "Grenada",
+                        "HT" => "Haiti",
+                        "JM" => "Jamaica",
+                        "KN" => "Saint Kitts and Nevis",
+                        "LC" => "Saint Lucia",
+                        "VC" => "Saint Vincent and the Grenadines",
+                        "TT" => "Trinidad and Tobago",
+                    ],
+                ],
+                "South America" => [
+                    "AR" => "Argentina",
+                    "BO" => "Bolivia",
+                    "BR" => "Brazil",
+                    "CL" => "Chile",
+                    "CO" => "Colombia",
+                    "EC" => "Ecuador",
+                    "GY" => "Guyana",
+                    "PY" => "Paraguay",
+                    "PE" => "Peru",
+                    "SR" => "Suriname",
+                    "UY" => "Uruguay",
+                    "VE" => "Venezuela",
+                ],
+            ],
+            // Add other continents and their regions here
+        ];
 
-        // Create 100 top-level entities
-        for ($i = 0; $i < 10; $i++) {
-            $topLevelEntity = [
-                'user_id' => User::all()->random()->id, 
-                'head_id' => null,
-                'parent_id' => null,
-                'name' => $faker->firstName(),
-                // 'code_1' => $faker->word,
-                // 'code_2' => $faker->word,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ];
+        $user = User::first();
+        $iso = Code::create([
+            'name' => 'ISO 3166',
+            'user_id' => $user->id,
+        ]);
+        foreach ($iso_3166 as $continent => $regions) {
+            $continentCode = Code::create([
+                'name' => $continent,
+                'parent_id' => $iso->id,
+                'head_id' => $iso->id,
+                'user_id' => $user->id,
+            ]);
 
-            $topLevelEntityId = DB::table('codes')->insertGetId($topLevelEntity);
+            foreach ($regions as $region => $subRegions) {
+                $regionCode = Code::create([
+                    'name' => $region,
+                    'parent_id' => $continentCode->id,
+                    'head_id' => $continentCode->id,
+                    'user_id' => $user->id,
+                ]);
 
-            // Create random children for the top-level entity
-            $this->createChildren($faker, $topLevelEntityId, $topLevelEntityId);
-        }
-    }
+                foreach ($subRegions as $subRegion => $countries) {
+                    if (is_array($countries)) {
+                        $subRegionCode = Code::create([
+                            'name' => $subRegion,
+                            'parent_id' => $regionCode->id,
+                            'head_id' => $continentCode->id,
+                            'user_id' => $user->id,
+                        ]);
 
-    /**
-     * Recursively create children for a given parent entity.
-     */
-    private function createChildren($faker, $headId, $parentId, $depth = 0): void
-    {
-        // Limit the depth of the tree to avoid infinite recursion
-        if ($depth > 5) {
-            return;
-        }
-
-        // Create a random number of children (between 0 and 5)
-        $numChildren = $faker->numberBetween(0, 5);
-
-        for ($i = 0; $i < $numChildren; $i++) {
-            $childEntity = [
-                'user_id' => User::all()->random()->id, 
-                'head_id' => $headId,
-                'parent_id' => $parentId,
-                'name' => $faker->firstName(),
-                // 'code_1' => $faker->word,
-                // 'code_2' => $faker->word,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ];
-
-            $childEntityId = DB::table('codes')->insertGetId($childEntity);
-
-            // Recursively create children for this child entity
-            $this->createChildren($faker, $headId, $childEntityId, $depth + 1);
+                        foreach ($countries as $code => $country) {
+                            Code::create([
+                                'name' => $country,
+                                'code_1' => $code,
+                                'parent_id' => $subRegionCode->id,
+                                'head_id' => $continentCode->id,
+                                'user_id' => $user->id,
+                            ]);
+                        }
+                    } else {
+                        Code::create([
+                            'name' => $countries,
+                            'code_1' => $subRegion,
+                            'parent_id' => $regionCode->id,
+                            'head_id' => $continentCode->id,
+                            'user_id' => $user->id,
+                        ]);
+                    }
+                }
+            }
         }
     }
 }

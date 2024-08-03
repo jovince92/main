@@ -13,7 +13,7 @@ const UserButton = (props: Props) => {
             <Button className='rounded-full' size='icon'>
                 <Avatar className="h-9 w-9">
                     {/* <AvatarImage src={user.photo} alt="Photo" /> */}
-                    <AvatarImage src='https://github.com/shadcn.png' alt="Photo" />
+                    <AvatarImage src='https://laravel.com/img/logomark.min.svg' alt="Photo" />
                     <AvatarFallback>{`${user.name.charAt(0)}`}</AvatarFallback>
                 </Avatar>
             </Button>

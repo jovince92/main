@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('codes', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id')->index();
-            $table->unsignedBigInteger('head_id')->index()->nullable(); //references self, head of the tree i.e. top level entity
-            $table->unsignedBigInteger('parent_id')->index()->nullable(); //references self, parent of the entity
+            $table->unsignedBigInteger('head_id')->nullable()->index(); // references self, head of the tree i.e. top level entity
+            $table->unsignedBigInteger('parent_id')->nullable()->index(); // references self, parent of the entity
             $table->string('name');
             $table->string('code_1')->nullable();
             $table->string('code_2')->nullable();

@@ -4,10 +4,7 @@
 
 html,
 body,
-:root{
-  height: 100%;
-}
-
+:root,
 #app{
   height: 100%;
 }
@@ -80,4 +77,9 @@ body,
   body {
     @apply bg-background text-foreground;
   }
+}
+
+
+#nprogress .bar {
+  @apply !shadow-lg !shadow-blue-600 !bg-gradient-to-r !from-blue-500 !via-red-400  !rounded-r-sm min-h-[0.3rem]
 }

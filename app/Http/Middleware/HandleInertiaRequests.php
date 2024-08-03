@@ -31,9 +31,8 @@ class HandleInertiaRequests extends Middleware
      * @return array<string, mixed>
      */
     public function share(Request $request): array
-    {
-        $isAuthenticated = Auth::check();
-        $codes=!$isAuthenticated ? [] : Code::whereNull('parent_id')->whereNull('head_id')->get();
+    {        
+        $codes=Code::whereNull('parent_id')->whereNull('head_id')->get();
         return [
             ...parent::share($request),
             'auth' => [

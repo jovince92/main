@@ -1,6 +1,6 @@
 import { PageProps } from '@/types';
 import { router, usePage } from '@inertiajs/react';
-import React, { ReactNode } from 'react'
+import { ReactNode } from 'react'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '../ui/dropdown-menu';
 import { LogOut, MoonStarIcon } from 'lucide-react';
 import { useTheme } from '@/Providers/ThemeProvider';

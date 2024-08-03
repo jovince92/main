@@ -8,6 +8,7 @@ type Props = {
     onOpen: (
         parentCode?: Code,
         currentCode?: Code,
+        isAddingSrcCode?: boolean
     ) => void;
     onClose: () => void;
 }
@@ -18,7 +19,15 @@ export const useCodeModal = create<Props>((set) => ({
     isOpen: false,
     onOpen: (
         currentCode?: Code,
-        parentCode?: Code
-    ) => set({ currentCode, parentCode, isOpen: true }),
-    onClose: () => set({ isOpen: false }),    
+        parentCode?: Code,
+    ) => set({ 
+        currentCode, 
+        parentCode, 
+        isOpen: true,
+    }),
+    onClose: () => set({ 
+        isOpen: false,
+        currentCode: undefined,
+        parentCode: undefined,
+    }),    
 }));

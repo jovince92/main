@@ -28,7 +28,12 @@ class Code extends Model
 
     public function children()
     {
-        return $this->hasMany(Code::class, 'parent_id');
+        return $this->hasMany(Code::class, 'parent_id')->whereNull('code_1')->whereNull('code_1');
+    }
+
+    public function items()
+    {
+        return $this->hasMany(Code::class, 'parent_id')->whereNotNull('code_1')->whereNotNull('code_1');
     }
 
     public function descendants()
